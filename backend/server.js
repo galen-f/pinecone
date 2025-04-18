@@ -17,9 +17,9 @@ app.use(express.json());
 let selectedFolderPath = null;
 
 // Open SQLite database (schema defined in photoDB.sql)
-const db = new sqlite3.Database('photo.db', sqlite3.OPEN_READWRITE, err => {
+const db = new sqlite3.Database(':memory:', sqlite3.OPEN_READWRITE, err => {
   if (err) console.error('DB open error:', err.message);
-  else console.log('Connected to SQLite database.');
+  else console.log('Connected to in-memory SQLite database.');
   initSchema(); // Initialize schema on startup
 });
 
