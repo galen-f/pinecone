@@ -1,4 +1,4 @@
-import { currentPhotoId, currentPhotoTags } from './state.js';
+import { state } from './state.js';
 import { fetchNestedTags } from './tagManager.js';
 
 export function openModal(photo) {
@@ -8,8 +8,8 @@ export function openModal(photo) {
   const downloadButton = modal.querySelector('.download-button');
   const tagsDiv = modal.querySelector('#photo-tags');
 
-  currentPhotoTags.length = 0;
-  currentPhotoId = photo.id;
+  state.currentPhotoTags.length = 0;
+  state.currentPhotoId = photo.id;
 
   modalImg.onload = () => {};
 
@@ -22,7 +22,7 @@ export function openModal(photo) {
     .then(response => response.json())
     .then(tags => {
       tagsDiv.innerHTML = '';
-      currentPhotoTags.length = 0;
+      state.currentPhotoTags.length = 0;
 
       if (tags.length >= 0) {
         const formattedTags = 'Tags: ' + tags.map(tag => {

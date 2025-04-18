@@ -1,7 +1,8 @@
 import { openModal } from './modalManager.js';
-import { selectedTags, itemsPerPage, currentPage } from './state.js';
+import { state } from './state.js';
 
 export function fetchPhotos(search = '') {
+  const { currentPage, itemsPerPage, selectedTags } = state;
   const container = document.getElementById('photos');
   container.innerHTML = '<p>Loading...</p>';
 
@@ -49,8 +50,8 @@ export function fetchPhotos(search = '') {
 
 export function setupPagination() {
   document.getElementById('prev-page').addEventListener('click', () => {
-    if (currentPage > 1) {
-      currentPage--;
+    if (state.currentPage > 1) {
+      state.currentPage--;
       fetchPhotos();
     }
   });
@@ -67,5 +68,5 @@ export function setupPagination() {
 }
 
 export function checkPaginationButtons() {
-  document.getElementById('prev-page').disabled = currentPage === 1;
+  document.getElementById('prev-page').disabled = state.currentPage === 1;
 }
