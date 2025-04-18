@@ -14,7 +14,7 @@ export function openModal(photo) {
   modalImg.onload = () => {};
 
   const safePath = photo.location.replace(/\\/g, '/');
-  modalImg.src = `../media/${safePath}`;
+  modalImg.src = `http://localhost:5000/media/${encodeURIComponent(safePath)}`;
   downloadButton.href = modalImg.src;
   downloadButton.download = photo.file_name;
 

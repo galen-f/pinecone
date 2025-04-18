@@ -23,14 +23,20 @@ export function fetchPhotos(search = '') {
           openModal(photo);
         });
 
+        const loc = encodeURIComponent(photo.location);
+
+        // full‑res media
         if (photo.file_type === 'video') {
           const video = document.createElement('video');
-          video.src = `../media/${photo.location}`;
-          video.poster = `../thumbs/${photo.location}`;
+          // full‑res
+          video.src    = `http://localhost:5000/media/${loc}`;
+          // thumbnail
+          video.poster = `http://localhost:5000/thumbnail/${loc}`;
           a.appendChild(video);
         } else {
           const img = document.createElement('img');
-          img.src = `../thumbs/${photo.location}`;
+          // serve thumbnail via HTTP, not file://
+          img.src = `http://localhost:5000/thumbnail/${loc}`;
           a.appendChild(img);
         }
 

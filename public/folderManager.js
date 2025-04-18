@@ -1,3 +1,5 @@
+import { fetchPhotos } from './photoGallery.js';
+
 document.getElementById('folderPickerButton').addEventListener('click', async () => {
     const folderPath = await window.electronAPI.selectFolder();
     if (folderPath) {
@@ -9,7 +11,11 @@ document.getElementById('folderPickerButton').addEventListener('click', async ()
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path: folderPath })
-      });
+      })
+      .then(res => res.json())
+      .then(() => {
+        fetchPhotos();
+      })
     }
   });
   let selectedFolderPath = null;
