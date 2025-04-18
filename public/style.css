@@ -236,7 +236,7 @@
 }
 
 .search-bar:focus {
-    max-width: 80vw;
+    max-width: 40vw;
 }
 
 .transparent-nav {

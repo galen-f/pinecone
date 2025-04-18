@@ -15,8 +15,6 @@
         <div class="form-inline">
             <input type="text" class="search-bar" id="search-bar" placeholder="Search photos...">
         </div>
-        <button class="folder-picker-btn" id="folderPickerButton" type="button" data-toggle="modal" data-target="#folderPickerModal"><i class="fas fa-folder"></i> Select Folder</button>
-        <button class="btn btn-secondary ml-auto filterbutton" id="filterButton" type="button" data-toggle="modal" data-target="#filtersModal"><i class="fas fa-filter"></i> Tags</button>
     </nav>
 
     <div class="container mt-5 pt-1">
@@ -24,24 +22,7 @@
             <!-- Photos will be dynamically inserted here -->
         </div>
     </div>
-    
-    <!-- Filters Modal -->
-    <div class="modal fade" id="filtersModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-right modal-sm" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Tags</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Filters content goes here -->
-                    <div id="filters"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <div class="container mt-5">
         <div id="photos" class="row mt-5"> <!--I somehow repeated this part, it works though so id just leave it here for now-->
             <!-- Photos will be dynamically inserted here -->
@@ -51,31 +32,10 @@
     <div id="modal" class="modal">
         <div class="modal-content">
             <img>
-            <div id="photo-tags"></div>
-            <button class="btn-secondary nested-button" id="nestedModalButton" type="button" data-toggle="modal" data-target="#nestedModal"><i class="fas fa-filter"></i></button>
-            <button class="close-button">&times;</button>
+            <!-- <button class="close-button">&times;</button> -->
             <a class="download-button" download>&darr;</a>
         </div>
     </div>
-
-    <!-- Nested filters Modal -->
-    <div class="modal fade" id="nestedModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-right modal-sm" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Tags</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Nested modal content goes here -->
-                    <div id="nestedModalContent"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     
     <div class="page-btn-container fixed-bottom">
         <button class="page-btn" id="prev-page">Previous Page</button>

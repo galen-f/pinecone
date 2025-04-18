@@ -67,7 +67,6 @@ app.post('/set-folder', async (req, res) => {
 // Recursively scan folder for media and insert into Photos table
 async function scanFolderAndPopulateDB(folder) {
   // Clear existing data
-  await dbRun('DELETE FROM PhotoTags');
   await dbRun('DELETE FROM Photos');
 
   const files = await getMediaFiles(folder);
@@ -97,13 +96,12 @@ async function getMediaFiles(dir) {
   return results;
 }
 
-// GET /photos — list photos with pagination, search, and tag filters
+// GET /photos — list photos with pagination and search
 app.get('/photos', ensureFolder, async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 100;
   const offset = (page - 1) * limit;
   const search = req.query.search || '';
-  const tagsParam = req.query.tags || '';
 
   let sql = 'SELECT * FROM Photos';
   const clauses = [];
@@ -112,20 +110,6 @@ app.get('/photos', ensureFolder, async (req, res) => {
   if (search) {
     clauses.push('file_name LIKE ?');
     params.push(`%${search}%`);
-  }
-
-  if (tagsParam) {
-    const tags = tagsParam.split(',').filter(t => t);
-    if (tags.length) {
-      clauses.push(
-        `id IN (
-          SELECT photo_id FROM PhotoTags pt
-          JOIN Tags t ON pt.tag_id = t.id
-          WHERE t.tag_name IN (${tags.map(() => '?').join(',')})
-        )`
-      );
-      params.push(...tags);
-    }
   }
 
   if (clauses.length) {
@@ -184,70 +168,6 @@ app.get('/thumbnail/:location', ensureFolder, async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   });
-
-// GET /tags — list all tag names
-app.get('/tags', async (req, res) => {
-  try {
-    const rows = await dbAll('SELECT tag_name FROM Tags');
-    res.json(rows.map(r => r.tag_name));
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// POST /photos/:id/tags — add a tag to a photo
-app.post('/photos/:id/tags', async (req, res) => {
-  const photoId = parseInt(req.params.id);
-  const tagName = req.body.tag_name;
-  if (!tagName) return res.status(400).json({ error: 'Missing tag_name' });
-  try {
-    let tag = await dbGet('SELECT id FROM Tags WHERE tag_name = ?', tagName);
-    let tagId;
-    if (tag) tagId = tag.id;
-    else {
-      const result = await dbRun('INSERT INTO Tags(tag_name) VALUES(?)', tagName);
-      tagId = result.lastID;
-    }
-    await dbRun('INSERT OR IGNORE INTO PhotoTags(photo_id, tag_id) VALUES(?, ?)', photoId, tagId);
-    res.json({ message: 'Tag added to photo' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// GET /photos/:id/tags — get tags for a photo
-app.get('/photos/:id/tags', async (req, res) => {
-  const photoId = parseInt(req.params.id);
-  try {
-    const rows = await dbAll(
-      `SELECT t.tag_name FROM Tags t
-       JOIN PhotoTags pt ON t.id = pt.tag_id
-       WHERE pt.photo_id = ?`,
-      [photoId]
-    );
-    res.json(rows.map(r => ({ tag_name: r.tag_name })));
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// DELETE /photos/:id/tags/:tagName — remove a tag from a photo
-app.delete('/photos/:id/tags/:tagName', async (req, res) => {
-  const photoId = parseInt(req.params.id);
-  const tagName = req.params.tagName;
-  try {
-    const tag = await dbGet('SELECT id FROM Tags WHERE tag_name = ?', tagName);
-    if (!tag) return res.status(404).json({ error: 'Tag not found' });
-    await dbRun('DELETE FROM PhotoTags WHERE photo_id = ? AND tag_id = ?', photoId, tag.id);
-    res.json({ message: 'Tag removed from photo' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-});
 
 const PORT = 5000;
 app.listen(PORT, () => {

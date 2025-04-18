@@ -1,5 +1,4 @@
 import { state } from './state.js';
-import { fetchNestedTags } from './tagManager.js';
 
 export function openModal(photo) {
   console.log('Photo ID:', photo.id);
@@ -8,7 +7,6 @@ export function openModal(photo) {
   const downloadButton = modal.querySelector('.download-button');
   const tagsDiv = modal.querySelector('#photo-tags');
 
-  state.currentPhotoTags.length = 0;
   state.currentPhotoId = photo.id;
 
   modalImg.onload = () => {};
@@ -17,23 +15,6 @@ export function openModal(photo) {
   modalImg.src = `http://localhost:5000/media/${encodeURIComponent(safePath)}`;
   downloadButton.href = modalImg.src;
   downloadButton.download = photo.file_name;
-
-  fetch(`http://localhost:5000/photos/${photo.id}/tags`)
-    .then(response => response.json())
-    .then(tags => {
-      tagsDiv.innerHTML = '';
-      state.currentPhotoTags.length = 0;
-
-      if (tags.length >= 0) {
-        const formattedTags = 'Tags: ' + tags.map(tag => {
-          currentPhotoTags.push(tag.tag_name);
-          return tag.tag_name;
-        }).join(', ');
-
-        tagsDiv.textContent = formattedTags;
-      }
-    })
-    .catch(error => console.error('Error fetching tags for modal:', error));
 
   modal.style.display = 'flex';
 }

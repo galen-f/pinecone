@@ -2,11 +2,11 @@ import { openModal } from './modalManager.js';
 import { state } from './state.js';
 
 export function fetchPhotos(search = '') {
-  const { currentPage, itemsPerPage, selectedTags } = state;
+  const { currentPage, itemsPerPage} = state;
   const container = document.getElementById('photos');
   container.innerHTML = '<p>Loading...</p>';
 
-  fetch(`http://localhost:5000/photos?page=${currentPage}&limit=${itemsPerPage}&search=${search}&tags=${selectedTags.join(',')}`)
+  fetch(`http://localhost:5000/photos?page=${currentPage}&limit=${itemsPerPage}&search=${search}`)
     .then(res => res.json())
     .then(data => {
       container.innerHTML = '';
@@ -57,12 +57,12 @@ export function setupPagination() {
   });
 
   document.getElementById('next-page').addEventListener('click', () => {
-    currentPage++;
+    state.currentPage++;
     fetchPhotos();
   });
 
   document.getElementById('search-bar').addEventListener('input', e => {
-    currentPage = 1;
+    state.currentPage = 1;
     fetchPhotos(e.target.value);
   });
 }
