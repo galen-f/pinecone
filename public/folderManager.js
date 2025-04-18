@@ -2,6 +2,7 @@ document.getElementById('folderPickerButton').addEventListener('click', async ()
     const folderPath = await window.electronAPI.selectFolder();
     if (folderPath) {
       console.log('Selected folder:', folderPath);
+      selectedFolderPath = folderPath;
   
       // send it to the backend to scan and process
       fetch('http://localhost:5000/set-folder', {
@@ -11,4 +12,9 @@ document.getElementById('folderPickerButton').addEventListener('click', async ()
       });
     }
   });
-  
+  let selectedFolderPath = null;
+
+  // Function returns the selected path so the system can display it
+  function getSelectedFolderPath() {
+    return selectedFolderPath;
+  }
