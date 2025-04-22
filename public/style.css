@@ -6,6 +6,7 @@
     grid-auto-columns: 175px;
     grid-gap: 0px;
     overflow: hidden;
+    margin-bottom: 5rem;
 }
 
 #photos a {

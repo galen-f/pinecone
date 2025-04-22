@@ -1,6 +1,10 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
+app.commandLine.appendSwitch('disable-http-cache');
+
+require(path.join(__dirname, 'backend', 'server.js'));
+
 function createWindow () {
 
 
@@ -10,9 +14,8 @@ function createWindow () {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
-      contextIsolation: true,
-      nodeIntegration: false
-    },
+      contextIsolation: true
+      },
     icon: path.join(__dirname, 'media', 'Pinecone_logo.png')
   });
 

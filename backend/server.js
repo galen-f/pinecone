@@ -7,8 +7,10 @@ const os = require('os');
 const util = require('util');
 const sharp = require('sharp');
 const ffmpeg = require('fluent-ffmpeg');
+const ffmpegStatic = require('ffmpeg-static');
 const sqlite3 = require('sqlite3').verbose();
 
+ffmpeg.setFfmpegPath(ffmpegStatic); // Set ffmpeg path for Windows compatibility
 
 const app = express();
 app.use(cors());
@@ -134,8 +136,14 @@ app.get('/photos', ensureFolder, async (req, res) => {
 // GET /media/:location — serve original file
 app.get('/media/:location', ensureFolder, (req, res) => {
   const filePath = path.join(selectedFolderPath, req.params.location);
-  res.sendFile(filePath, err => {
-    if (err) res.status(404).send('Not found');
+
+  // 1) guard that the file exists and is readable
+  fs.access(filePath, fs.constants.R_OK, err => {
+    if (err) {
+      return res.status(404).send('Not found');
+    }
+    // 2) now it’s safe to stream it
+    res.sendFile(filePath);
   });
 });
 
@@ -146,24 +154,46 @@ app.get('/thumbnail/:location', ensureFolder, async (req, res) => {
     const cacheDir = path.join(os.tmpdir(), 'pinecone-thumbs', path.dirname(rel));
     const thumbName = path.basename(rel) + '.jpg';
     const thumbPath = path.join(cacheDir, thumbName);
+
+    // check original exists
+      if (!fs.existsSync(fullPath)) {
+        return res.status(404).json({ error: 'Original file not found' });
+      }
   
-    try {
-      await fs.promises.mkdir(cacheDir, { recursive: true });
-      if (fs.existsSync(thumbPath)) {
-        return res.sendFile(thumbPath);
-      }
-      if (/\.(mp4|mov)$/i.test(fullPath)) {
-        ffmpeg(fullPath)
-          .screenshots({ timestamps: ['0'], size: '200x200', folder: cacheDir, filename: thumbName })
-          .on('end', () => res.sendFile(thumbPath))
-          .on('error', err => res.status(500).json({ error: err.message }));
-      } else {
-        sharp(fullPath)
+      try {
+        await fs.promises.mkdir(cacheDir, { recursive: true });
+    
+        // 2) serve cached if present
+        if (fs.existsSync(thumbPath)) {
+          return res.sendFile(thumbPath);
+        }
+    
+        // 3) branch on video vs image
+        if (/\.(mp4|mov)$/i.test(fullPath)) {
+          // video: spawn ffmpeg and return immediately
+          ffmpeg(fullPath)
+            .screenshots({
+              timestamps: ['00:00:00.000'],
+              size:       '200x200',
+              folder:     cacheDir,
+              filename:   thumbName,
+            })
+            .once('end', () => res.sendFile(thumbPath))
+            .once('error', err => {
+              if (!res.headersSent) {
+                res.status(500).json({ error: err.message });
+              }
+            });
+          return;  // prevent “handler finished” before callbacks fire
+        }
+    
+        // 4) image: use async/await so we can return cleanly
+        await sharp(fullPath)
+          .rotate()
           .resize(200, 200)
-          .toFile(thumbPath)
-          .then(() => res.sendFile(thumbPath))
-          .catch(err => res.status(500).json({ error: err.message }));
-      }
+          .toFile(thumbPath);
+    
+        return res.sendFile(thumbPath);
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
