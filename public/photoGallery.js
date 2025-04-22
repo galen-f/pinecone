@@ -4,7 +4,7 @@ import { state } from './state.js';
 export function fetchPhotos(search = '') {
   const { currentPage, itemsPerPage} = state;
   const container = document.getElementById('photos');
-  container.innerHTML = '<p>Loading...</p>';
+  container.innerHTML = '<p>Please Select a Folder.</p>';
 
   fetch(`http://localhost:5000/photos?page=${currentPage}&limit=${itemsPerPage}&search=${search}`)
     .then(res => res.json())
