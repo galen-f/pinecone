@@ -3,7 +3,18 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
   packagerConfig: {
-    asar: false,
+    asar: {
+      unpack: [
+        'node_modules/sharp/**/*.node',
+        'node_modules/@img/**/*.node',
+        '**/node_modules/sharp/vendor/lib/*',
+        '**/node_modules/@ffmpeg-installer/ffmpeg/ffmpeg',
+        '**/node_modules/@ffmpeg-installer/ffmpeg/vendor/*',
+        '**/node_modules/@ffmpeg-installer/ffmpeg/vendor/*/**',
+        '**/*.node',
+        '**/*.dll'
+      ]
+    },
     "icon": "./media/app_icon",
   },
   rebuildConfig: {
@@ -29,6 +40,10 @@ module.exports = {
     },
   ],
   plugins: [
+    {
+    name: '@electron-forge/plugin-auto-unpack-natives',
+    config: {}
+    },
     // Fuses are used to enable/disable various Electron functionality
     // at package time, before code signing the application
     new FusesPlugin({
