@@ -12,11 +12,12 @@ function createWindow () {
       nodeIntegration: true,
       contextIsolation: true,
       nodeIntegration: false
-    }
+    },
+    icon: path.join(__dirname, 'media', 'Pinecone_logo.png')
   });
 
   win.loadFile('public/index.html');
-  win.webContents.openDevTools(); // Enabled for debugging
+  // win.webContents.openDevTools(); // Enable for debugging
 
   const { dialog, ipcMain } = require('electron');
 

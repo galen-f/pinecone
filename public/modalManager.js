@@ -5,6 +5,7 @@ export function openModal(photo) {
   const modal = document.getElementById('modal');
   const modalImg = modal.querySelector('img');
   const downloadButton = modal.querySelector('.download-button');
+  const imageName = modal.querySelector('.image-name');
   const tagsDiv = modal.querySelector('#photo-tags');
 
   state.currentPhotoId = photo.id;
@@ -15,6 +16,7 @@ export function openModal(photo) {
   modalImg.src = `http://localhost:5000/media/${encodeURIComponent(safePath)}`;
   downloadButton.href = modalImg.src;
   downloadButton.download = photo.file_name;
+  imageName.textContent = photo.file_name;
 
   modal.style.display = 'flex';
 }

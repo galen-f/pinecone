@@ -1,57 +1,109 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Photo Management System</title> <!--Change this to whatever title we want to use-->
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <script type="module" src="./manager.js"></script>
-    <script type="module" src="./folderManager.js"></script>
-</head>
-<body>
-    <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top transparent-nav">
-        <h1 class="navbar-title"><a href="#">PINCONE</a></h1> <!--Insert page title here-->
-        <div class="form-inline">
-            <input type="text" class="search-bar" id="search-bar" placeholder="Search photos...">
-        </div>
-    </nav>
+	<head>
+		<title>Pinecone - Photo Management System</title>
+		<link
+			rel="stylesheet"
+			href="style.css" />
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+		<script
+			type="module"
+			src="./manager.js"></script>
+		<script
+			type="module"
+			src="./folderManager.js"></script>
+	</head>
+	<body>
+		<!-- Navbar -->
+			<div class="nav-container">
 
-    <div class="container mt-5 pt-1">
-        <div id="photos" class="row mt-5">
-            <!-- Photos will be dynamically inserted here -->
-        </div>
-    </div>
+				<img
+					class="navbar-logo"
+					src="../media/Pinecone_logo.png" />
+				<div class="form-inline">
+					<input
+						type="text"
+						class="search-bar"
+						id="search-bar"
+						placeholder="Search photos..." />
+                    </div>
+                    <button
+						class="folder-picker-btn"
+						id="folderPickerButton"
+						type="button"
+						data-toggle="modal"
+						data-target="#folderPickerModal">
+						<i class="fas fa-folder"></i> 
+						Select Folder
+					</button>
+				</div>
 
-    <div class="container mt-5">
-        <div id="photos" class="row mt-5"> <!--I somehow repeated this part, it works though so id just leave it here for now-->
-            <!-- Photos will be dynamically inserted here -->
-        </div>
-    </div>
-    <!--Photo Modal-->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <img>
-            <!-- <button class="close-button">&times;</button> -->
-            <a class="download-button" download>&darr;</a>
-        </div>
-    </div>
-    
-    <div class="page-btn-container fixed-bottom">
-        <button class="page-btn" id="prev-page">Previous Page</button>
-        <button class="page-btn" id="next-page">Next Page</button>
-    </div>
-    <script>
-        document.getElementById("prev-page").addEventListener("click", function() {
-          window.scrollTo(0, 0);
-        });
-      
-        document.getElementById("next-page").addEventListener("click", function() {
-          window.scrollTo(0, 0);
-        });
-      </script>
+		<div class="container mt-5 pt-1">
+			<div
+				id="photos"
+				class="row mt-5">
+				<!-- Photos will be dynamically inserted here -->
+			</div>
+		</div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-</body>
+		<!--Photo Modal-->
+		<div
+			id="modal"
+			class="modal">
+			<div class="modal-content">
+				<img /> <!--The image being displayed-->
+				<div class="image-details-container">
+					<!--The name of the image being displayed-->
+					<p 
+					class="image-name" 
+					id="image-name"
+					>					
+					</p>
+
+					<!--Button to download the image being displayed-->
+					<a
+					class="download-button"
+					download
+					>&darr;
+					</a>
+				</div>
+				
+			</div>
+		</div>
+
+		<!--Navigation buttons (bottom)-->
+		<div class="page-btn-container fixed-bottom">
+			<button
+				class="page-btn"
+				id="prev-page">
+				Previous Page
+			</button>
+			<button
+				class="page-btn"
+				id="next-page">
+				Next Page
+			</button>
+		</div>
+		<script>
+			document
+				.getElementById('prev-page')
+				.addEventListener('click', function () {
+					window.scrollTo(0, 0);
+				});
+
+			document
+				.getElementById('next-page')
+				.addEventListener('click', function () {
+					window.scrollTo(0, 0);
+				});
+		</script>
+
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	</body>
 </html>
